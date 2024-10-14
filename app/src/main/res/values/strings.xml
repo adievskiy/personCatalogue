@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PersonCatalogue</string>
+    <string name="titleExitMenu">Выход</string>
+    <string name="hintPersonNameET">Введите имя</string>
+    <string name="hintPersonAgeET">Введите возраст</string>
+    <string name="textSaveButtonBTN">Сохранить</string>
+</resources>
