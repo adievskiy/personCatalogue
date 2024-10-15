@@ -1,11 +1,9 @@
 package com.example.personcatalogue
 
 import android.annotation.SuppressLint
-import android.app.Person
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -62,11 +60,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         personListLV.onItemClickListener =
-            AdapterView.OnItemClickListener { _, _, position, _ ->
-                val item = adapter.getItem(position)
-                adapter.remove(item)
-                Toast.makeText(this, "$item удален из списка", Toast.LENGTH_LONG).show()
-            }
+            MyDialog.createDialog(this, adapter)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
