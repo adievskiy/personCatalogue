@@ -10,10 +10,12 @@ import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,7 +24,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var personAgeET: EditText
     private lateinit var savePersonBTN: Button
     private lateinit var personListLV: ListView
-    private val persons: MutableList<User> = mutableListOf()
+
+    private val userViewModel: UserViewModel by viewModels()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +47,16 @@ class MainActivity : AppCompatActivity() {
         savePersonBTN = findViewById(R.id.savePersonBTN)
 
         personListLV = findViewById(R.id.personListLV)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, persons)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf<User>())
         personListLV.adapter = adapter
+
+        userViewModel.person.observe(this, Observer { person ->
+            person?.let {
+                adapter.clear()
+                adapter.addAll(person)
+                adapter.notifyDataSetChanged()
+            }
+        })
 
         savePersonBTN.setOnClickListener {
             if (personNameET.text.isEmpty() || personAgeET.text.isEmpty()) {
@@ -53,8 +64,7 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val person = User(personNameET.text.toString(), personAgeET.text.toString().toInt())
-            persons.add(person)
-            adapter.notifyDataSetChanged()
+            userViewModel.addUser(person)
             personNameET.text.clear()
             personAgeET.text.clear()
         }
@@ -73,11 +83,5 @@ class MainActivity : AppCompatActivity() {
             R.id.exitMenu -> finish()
         }
         return super.onOptionsItemSelected(item)
-    }
-}
-
-data class User(private val name: String, private val age: Int) {
-    override fun toString(): String {
-        return "Имя $name, возраст $age"
     }
 }
